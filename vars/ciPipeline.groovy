@@ -43,6 +43,28 @@ def call(Map config) {
                 }
             }
 
+            stage('Update GitOps Repo') {
+                steps {
+                    script {
+
+                        sh """
+                        git clone https://github.com/astranova-cloud/astranova-gitops.git
+
+                        cd astranova-gitops/k8s
+
+                        sed -i 's|image: .*|image: ${config.repo}:${config.imageTag}|' deployment.yaml
+
+                        git config user.email "jenkins@astranova.com"
+                        git config user.name "jenkins"
+
+                        git add .
+                        git commit -m "Update image to ${config.imageTag}"
+                        git push
+                        """
+                    }
+                }
+            }
+
         }
 
         post {
