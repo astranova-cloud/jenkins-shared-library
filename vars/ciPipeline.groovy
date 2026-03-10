@@ -56,8 +56,8 @@ def call(Map config) {
 
                         sed -i 's|image: .*|image: ${config.repo}:${config.imageTag}|' deployment.yaml
 
-                        git config user.email "jenkins@astranova.com"
-                        git config user.name "jenkins"
+                        git config user.email "meherrohit99@gmail.com"
+                        git config user.name "kumar99786"
 
                         git add .
                         git commit -m "Update image to ${config.imageTag}"
