@@ -44,28 +44,34 @@ def call(Map config) {
             }
 
             stage('Update GitOps Repo') {
-                steps {
-                    script {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'github-creds',
+            usernameVariable: 'GIT_USER',
+            passwordVariable: 'GIT_PASS'
+        )]) {
 
-                        sh """
-                        rm -rf astranova-gitops
-                        
-                        git clone https://github.com/astranova-cloud/astranova-gitops.git
+            sh '''
+            rm -rf astranova-gitops
 
-                        cd astranova-gitops/k8s
+            git clone https://${GIT_USER}:${GIT_PASS}@github.com/astranova-cloud/astranova-gitops.git
 
-                        sed -i 's|image: .*|image: ${config.repo}:${config.imageTag}|' deployment.yaml
+            cd astranova-gitops/k8s
 
-                        git config user.email "meherrohit99@gmail.com"
-                        git config user.name "kumar99786"
+            sed -i "s|image:.*|image: 806889657148.dkr.ecr.us-east-1.amazonaws.com/astranova-app:${BUILD_NUMBER}|g" deployment.yaml
 
-                        git add .
-                        git commit -m "Update image to ${config.imageTag}"
-                        git push
-                        """
-                    }
-                }
-            }
+            git config user.email "meherrohit99@gmail.com"
+            git config user.name "ROHIT KUMAR MEHER"
+
+            git add .
+
+            git commit -m "Update image ${BUILD_NUMBER}" || echo "No changes to commit"
+
+            git push origin main
+            '''
+        }
+    }
+}
 
         }
 
