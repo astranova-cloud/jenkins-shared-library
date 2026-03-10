@@ -48,6 +48,8 @@ def call(Map config) {
                     script {
 
                         sh """
+                        rm -rf astranova-gitops
+                        
                         git clone https://github.com/astranova-cloud/astranova-gitops.git
 
                         cd astranova-gitops/k8s
